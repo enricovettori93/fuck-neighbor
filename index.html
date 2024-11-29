@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html class="scroll-smooth bg-black text-white" lang="it">
+<head>
+    <title>Fuck neighbor</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.cdnfonts.com/css/doom-2016-left" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <script src="js/script.js" defer></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-3">
+<div class="bg-[url('/assets/doom.jpg')] bg-no-repeat bg-contain bg-cover bg-center absolute inset-0 z-[-1] opacity-15"></div>
+<section class="flex flex-col text-center gap-5">
+    <h1 class="text-6xl underline">Fuck neighbor</h1>
+    <p class="text-3xl">I tuoi vicini scassano la m*****a?</p>
+    <p class="text-3xl">Diventa piú scassacazzi di loro! Metti dei suoni a caso quando meno se lo aspettano</p>
+</section>
+<section class="mt-10">
+    <div class="flex flex-col gap-5">
+        <p class="text-2xl text-center">Seleziona i suoni da randomizzare</p>
+        <div id="soundsContainer" class="grid grid-cols-2 gap-5 text-2xl"></div>
+    </div>
+    <div class="flex flex-col gap-2 mt-8">
+        <label for="minInterval" class="text-2xl">Intervallo minimo per il prossimo suono (in secondi)</label>
+        <input name="minInterval" id="minInterval" type="number" value="2" class="p-2 text-black">
+    </div>
+    <div class="flex flex-col gap-2 mt-8">
+        <label for="maxInterval" class="text-2xl">Intervallo massimo per il prossimo suono (in secondi)</label>
+        <input name="maxInterval" id="maxInterval" type="number" value="10" class="p-2 text-black">
+    </div>
+    <div id="nextSoundContainer" class="text-2xl py-2"></div>
+    <div class="flex justify-evenly mt-5 text-xl">
+        <button id="play" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 rounded disabled:opacity-50 w-[7em]">Play</button>
+        <button id="stop" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 rounded disabled:opacity-50 w-[7em]" disabled>Stop</button>
+    </div>
+</section>
