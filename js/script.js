@@ -8,12 +8,16 @@ const stopButton = document.getElementById("stop");
 const soundsFiles = ["door-slam.mp3", "truck.mp3", "chair-1.mp3", "metal-chair.mp3"];
 let soundTimeout = null;
 let counterInterval = null;
-const debounceTime = 500;
+const debounceTime = 1000;
 let isPlaying = false;
 let player = new Audio();
 player.loop = false;
 player.onended = () => {
     isPlaying && createInterval();
+}
+
+function inputError() {
+    return Number(minIntervalInput.value) > Number(maxIntervalInput.value);
 }
 
 function createInterval() {
@@ -44,12 +48,14 @@ function createInterval() {
 }
 
 function addListeners() {
-    minIntervalInput?.addEventListener("keydown", _.debounce((e) => {
-        createInterval();
-    }, debounceTime));
-    maxIntervalInput?.addEventListener("keydown", _.debounce((e) => {
-        createInterval();
-    }, debounceTime));
+    [minIntervalInput, maxIntervalInput].forEach(input => {
+        input?.addEventListener("keydown", _.debounce((e) => {
+            hasOneChecked && play();
+        }, debounceTime));
+        input?.addEventListener("focus", _ => {
+            stop();
+        });
+    })
     playButton?.addEventListener("click", play);
     stopButton?.addEventListener("click", stop);
 }
@@ -73,7 +79,7 @@ function addOptions() {
         });
         label.htmlFor = sound;
         label.innerHTML = normalizeFileName(sound);
-        label.classList = "px-2";
+        label.classList.add(["px-2"]);
         checkbox.type = "checkbox";
         checkbox.value = `${soundFolderPrefix}/${sound}`;
         checkbox.id = sound;
@@ -109,8 +115,16 @@ function stop() {
     nextSoundContainer.innerHTML = "In pausa";
 }
 
+function hasOneChecked() {
+    return document.querySelectorAll("input[type='checkbox']:checked").length > 0;
+}
+
 function play() {
-    if (!document.querySelectorAll("input[type='checkbox']:checked").length) {
+    if (inputError()) {
+        alert("L'intervallo minimo non può essere maggiore dell'intervallo massimo");
+        return;
+    }
+    if (!hasOneChecked()) {
         alert("Devi selezionare almeno un suono");
         return;
     }
