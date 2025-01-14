@@ -1,0 +1,79 @@
+import Player from "./player.js";
+import {ui} from "./ui.js";
+import {debounceTime} from "./constants.js";
+import {hasOneChecked, inputError} from "./utils.js";
+export let player;
+
+function init() {
+    let soundTimeout = null;
+    let counterInterval = null;
+
+    player = new Player(() => {
+        player.isPlaying && createInterval();
+    });
+
+    function createInterval() {
+        soundTimeout && clearTimeout(soundTimeout);
+        counterInterval && clearInterval(counterInterval);
+        let counter = 1;
+        const min = ui.minIntervalInput.value;
+        const max = ui.maxIntervalInput.value;
+        const nextSound = Math.floor(Math.random() * (max - min + 1) + min) * 1000;
+
+        const setIntervalHtml = (value) => {
+            ui.nextSoundContainer.innerHTML = value <= 0 ? "Sto suonando!" : `Prossimo suono in ${value} secondi`;
+        }
+
+        setIntervalHtml(nextSound / 1000);
+
+        counterInterval = setInterval(() => {
+            const nextValue = (nextSound / 1000) - counter;
+            setIntervalHtml(nextValue);
+            counter++;
+        }, 1000);
+
+        soundTimeout = setTimeout(async () => {
+            clearInterval(counterInterval);
+            counter = 0;
+            await player.playRandomSound();
+        }, nextSound);
+    }
+
+    function addListeners() {
+        [ui.minIntervalInput, ui.maxIntervalInput].forEach(input => {
+            input?.addEventListener("keydown", _.debounce((e) => {
+                hasOneChecked() && play();
+            }, debounceTime));
+            input?.addEventListener("focus", _ => {
+                stop();
+            });
+        })
+        ui.playButton?.addEventListener("click", play);
+        ui.stopButton?.addEventListener("click", stop);
+    }
+
+    function stop() {
+        soundTimeout && clearTimeout(soundTimeout);
+        counterInterval && clearInterval(counterInterval);
+        player.stop();
+        ui.stop();
+    }
+
+    function play() {
+        if (inputError()) {
+            alert("L'intervallo minimo non può essere maggiore dell'intervallo massimo");
+            return;
+        }
+        if (!hasOneChecked()) {
+            alert("Devi selezionare almeno un suono");
+            return;
+        }
+        ui.play();
+        createInterval();
+    }
+
+    ui.addOptions();
+    addListeners();
+}
+
+init();
