@@ -8,9 +8,7 @@ function init() {
     let soundTimeout = null;
     let counterInterval = null;
 
-    player = new Player(() => {
-        player.isPlaying && createInterval();
-    });
+    player = new Player();
 
     function createInterval() {
         soundTimeout && clearTimeout(soundTimeout);
@@ -69,6 +67,11 @@ function init() {
             return;
         }
         ui.play();
+
+        player.onEnd(() => {
+           createInterval();
+        });
+
         createInterval();
     }
 

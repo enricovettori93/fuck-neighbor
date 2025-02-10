@@ -20,17 +20,45 @@ function play() {
     stopButton.disabled = false;
 }
 
+function btnIcon(isPlaying = false) {
+    return isPlaying ? "<i class=\"fa-solid fa-pause\"></i>" : "<i class=\"fa-solid fa-play\"></i>";
+}
+
+function updateButtonPlaySoundPreview () {
+    document.querySelectorAll("#soundsContainer button")?.forEach(btn => {
+        btn.innerHTML = btn.dataset.playing === "true" ? btnIcon(true) : btnIcon(false);
+    });
+}
+
+function buildSoundButton(sound) {
+    const playButton = document.createElement("button");
+    playButton.type = "button";
+    playButton.innerHTML = btnIcon(false);
+    playButton.dataset.sound = sound;
+    playButton.dataset.playing = "false";
+    playButton.addEventListener("click", () => {
+        if (playButton.dataset.playing === "true") {
+            playButton.dataset.playing = "false";
+            player.stop();
+        } else {
+            playButton.dataset.playing = "true";
+            player.playSound(`${soundFolderPrefix}/${sound}`);
+            player.onEnd(() => {
+                playButton.dataset.playing = "false";
+                updateButtonPlaySoundPreview();
+            });
+        }
+        updateButtonPlaySoundPreview();
+    });
+    return playButton;
+}
+
 function addOptions() {
     soundsFiles.forEach(sound => {
         const wrapper = document.createElement("div");
         const label = document.createElement("label");
-        const playButton = document.createElement("button");
         const checkbox = document.createElement("input");
-        playButton.type = "button";
-        playButton.innerHTML = "<i class=\"fa-solid fa-play\"></i>";
-        playButton.addEventListener("click", async () => {
-            await player.playSound(`${soundFolderPrefix}/${sound}`);
-        });
+        const playButton = buildSoundButton(sound);
         label.htmlFor = sound;
         label.innerHTML = normalizeFileName(sound);
         label.classList.add(["px-2"]);

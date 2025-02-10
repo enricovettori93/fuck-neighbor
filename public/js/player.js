@@ -1,10 +1,13 @@
 import {pickRandomSound} from "./utils.js";
 
 class Player {
-    constructor(onEnd = () => {}) {
+    constructor() {
         this.isPlaying = false;
         this.player = new Audio();
         this.player.loop = false;
+    }
+
+    onEnd(onEnd = () => {}) {
         this.player.onended = () => {
             this.isPlaying = false;
             onEnd();
