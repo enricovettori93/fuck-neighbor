@@ -1,7 +1,7 @@
 import Player from "./player.js";
 import {ui} from "./ui.js";
 import {debounceTime} from "./constants.js";
-import {hasOneChecked, inputError} from "./utils.js";
+import {hasOneChecked, inputError, validIntervalNumbers} from "./utils.js";
 export let player;
 
 function init() {
@@ -14,8 +14,13 @@ function init() {
         soundTimeout && clearTimeout(soundTimeout);
         counterInterval && clearInterval(counterInterval);
         let counter = 1;
-        const min = ui.minIntervalInput.value;
-        const max = ui.maxIntervalInput.value;
+        const min = Number(ui.minIntervalInput.value);
+        const max = Number(ui.maxIntervalInput.value);
+        if (Number.isNaN(min) || Number.isNaN(max)) {
+            alert("Inserisci un intervallo valido");
+            ui.stop();
+            return;
+        }
         const nextSound = Math.floor(Math.random() * (max - min + 1) + min) * 1000;
 
         const setIntervalHtml = (value) => {
@@ -58,6 +63,10 @@ function init() {
     }
 
     function play() {
+        if (!validIntervalNumbers()) {
+            alert("Inserisci numeri validi per gli intervalli");
+            return;
+        }
         if (inputError()) {
             alert("L'intervallo minimo non può essere maggiore dell'intervallo massimo");
             return;
